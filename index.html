@@ -321,38 +321,61 @@ function submitAttendance() {
     body: new URLSearchParams({ employee, action, time, date, image: imageData })
   })
   .then(res => res.text())
-  .then(data => {
-    showResult(data.trim(), employee, action, time);
-  })
-  .finally(() => {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Submit Attendance";
-  });
+.then(res=>res.text())
+.then(data=>{
+
+let result=document.getElementById("result");
+
+let hour = new Date().getHours();
+let greeting = "";
+
+if(hour >= 5 && hour < 12){
+    greeting = "🌅 Good Morning";
+}
+else if(hour >= 12 && hour < 15){
+    greeting = "☀️ Good Noon";
+}
+else if(hour >= 15 && hour < 18){
+    greeting = "🌇 Good Afternoon";
+}
+else if(hour >= 18 && hour < 22){
+    greeting = "🌆 Good Evening";
+}
+else{
+    greeting = "🌙 Good Night";
 }
 
-function showResult(status, employee, action, time) {
-  const resultDiv = document.getElementById("result");
-  const content = document.getElementById("resultContent");
+if(data.trim()=="NAME_ERROR"){
 
-  let html = "";
+    result.innerHTML = "❌ Name does not match";
 
-  if (status === "NAME_ERROR") {
-    html = `<h2 style="color:#ef4444">❌ Name Error</h2>`;
-  } else if (status === "ENTRY_REQUIRED") {
-    html = `<h2 style="color:#f59e0b">⚠ First action must be Entry</h2>`;
-  } else if (status === "ALREADY") {
-    html = `<h2 style="color:#eab308">${employee}<br>Already Marked</h2>`;
-  } else {
-    html = `
-      <h2 style="color:#22c55e; font-size:42px">✅ Success</h2>
-      <p style="margin:15px 0; font-size:18px">Attendance Recorded</p>
-      <p><strong>${employee}</strong></p>
-      <p>${action} • ${time}</p>
-    `;
-  }
+}
+else if(data.trim()=="ENTRY_REQUIRED"){
 
-  content.innerHTML = html;
-  resultDiv.style.display = "flex";
+    result.innerHTML = "⚠️ First action must be Entry";
+
+}
+else if(data.trim()=="ALREADY"){
+
+    result.innerHTML =
+    greeting +
+    "<br><br>Mr. " + employee +
+    "<br>⚠ Attendance Already Submitted";
+
+}
+else{
+
+    result.innerHTML =
+    greeting +
+    "<br><br>Mr. <b>" + employee + "</b>" +
+    "<br>Your <b>" + action + "</b> has been submitted successfully." +
+    "<br><br>🕒 Submitted At: <b>" + time + "</b>";
+
+}
+
+result.style.display="flex";
+
+});
 
   // Auto hide after 4 seconds
   setTimeout(() => {
