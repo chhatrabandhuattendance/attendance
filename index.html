@@ -321,6 +321,30 @@ function submitAttendance() {
     body: new URLSearchParams({ employee, action, time, date, image: imageData })
   })
   .then(res => res.text())
+    .then(data=>{
+
+let hour = new Date().getHours();
+let greeting = "";
+
+if(hour >= 5 && hour < 12){
+    greeting = "🌅 Good Morning";
+}
+else if(hour >= 12 && hour < 15){
+    greeting = "☀️ Good Noon";
+}
+else if(hour >= 15 && hour < 18){
+    greeting = "🌇 Good Afternoon";
+}
+else if(hour >= 18 && hour < 22){
+    greeting = "🌆 Good Evening";
+}
+else{
+    greeting = "🌙 Good Night";
+}
+
+let result=document.getElementById("result");
+
+...
   .then(data => {
     showResult(data.trim(), employee, action, time);
   })
@@ -344,10 +368,11 @@ function showResult(status, employee, action, time) {
     html = `<h2 style="color:#eab308">${employee}<br>Already Marked</h2>`;
   } else {
     html = `
-      <h2 style="color:#22c55e; font-size:42px">✅ Success</h2>
-      <p style="margin:15px 0; font-size:18px">Attendance Recorded</p>
-      <p><strong>${employee}</strong></p>
-      <p>${action} • ${time}</p>
+      result.innerHTML=
+greeting+
+"<br><br>Mr. "+employee+
+"<br>Your "+action+" has been submitted successfully."+
+"<br><br>🕒 Submitted At: "+time
     `;
   }
 
