@@ -313,7 +313,7 @@ function submitAttendance() {
   submitBtn.textContent = "Submitting...";
 
   const now = new Date();
-  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' second: '2-digit'});
   const date = now.toISOString().split('T')[0];
 
   fetch("https://script.google.com/macros/s/AKfycbwDZ1clDQI8JeUcbBOzLSUWbWy1QrUeqXfGI7Df74Mj_3fxjrJDQ8As5X4REEupwl8u/exec", {
