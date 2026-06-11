@@ -247,28 +247,57 @@ const locationStatus = document.getElementById("locationStatus");
 const submitBtn = document.getElementById("submitBtn");
 
 // Camera
-navigator.mediaDevices.getUserMedia({ 
-  video: { facingMode: "user" } 
-})
-.then(stream => { video.srcObject = stream; })
-.catch(err => console.error("Camera error:", err));
+function initApp() {
 
-// Geolocation
-navigator.geolocation.getCurrentPosition(pos => {
-  const dist = getDistance(pos.coords.latitude, pos.coords.longitude, OFFICE_LAT, OFFICE_LON);
-  
-  if (dist < RADIUS) {
-    locationStatus.className = "status approved";
-    locationStatus.innerHTML = "✅ Location Approved • Inside Office";
-    locationApproved = true;
-  } else {
-    locationStatus.className = "status rejected";
-    locationStatus.innerHTML = "❌ Outside Office Radius";
-  }
-}, () => {
-  locationStatus.className = "status rejected";
-  locationStatus.innerHTML = "❌ Location access denied";
-});
+  imageData = "";
+  locationApproved = false;
+
+  preview.style.display = "none";
+  video.style.display = "block";
+
+  // Camera
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: "user" }
+  })
+  .then(stream => {
+    video.srcObject = stream;
+  })
+  .catch(err => {
+    console.error("Camera error:", err);
+  });
+
+  // Location
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const dist = getDistance(
+        pos.coords.latitude,
+        pos.coords.longitude,
+        OFFICE_LAT,
+        OFFICE_LON
+      );
+
+      if (dist < RADIUS) {
+        locationStatus.className = "status approved";
+        locationStatus.innerHTML = "✅ Location Approved • Inside Office";
+        locationApproved = true;
+      } else {
+        locationStatus.className = "status rejected";
+        locationStatus.innerHTML = "❌ Outside Office Radius";
+      }
+    },
+    () => {
+      locationStatus.className = "status rejected";
+      locationStatus.innerHTML = "❌ Location access denied";
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000
+    }
+  );
+}
+
+window.addEventListener("load", initApp);
 
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371000;
